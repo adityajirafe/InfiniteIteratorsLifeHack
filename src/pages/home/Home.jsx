@@ -8,7 +8,7 @@ import {
   DirectionsRenderer,
   DistanceMatrixService,
 } from "@react-google-maps/api";
-import { checkWithinRadius, getCoords } from "../../geometry";
+import { checkWithinRadius, getCoords, findRoute } from "../../geometry";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import { firestore } from "../../firebase";
@@ -179,7 +179,7 @@ export default function Home() {
       <>
         <Box
           sx={{
-            backgroundColor: "#FF0",
+            backgroundColor: "#FFFFFF",
           }}
         >
           <Typography> is Loading</Typography>
@@ -191,7 +191,7 @@ export default function Home() {
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
-          backgroundColor: "#FF0",
+          backgroundColor: "#FFFFFF",
           //   display: "flex",
           height: "60vh",
           width: "100vw",
