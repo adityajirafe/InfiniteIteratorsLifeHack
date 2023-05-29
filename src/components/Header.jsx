@@ -32,9 +32,6 @@ function Header() {
         <Button color="inherit" component={Link} to="/matched">
           Matched
         </Button>
-        <Button color="inherit" component={Link} to="/map">
-          Map
-        </Button>
         {!email ? (
           <>
             <Button color="inherit" component={Link} to="/login">
