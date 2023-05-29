@@ -8,7 +8,7 @@ import {
   DirectionsRenderer,
   DistanceMatrixService,
 } from "@react-google-maps/api";
-import { checkWithinRadius, getCoords } from "../../geometry";
+import { checkWithinRadius, getCoords, findRoute } from "../../geometry";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import { firestore } from "../../firebase";
