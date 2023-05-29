@@ -7,20 +7,44 @@ import CircularProgress from "@mui/material/CircularProgress";
 import * as Yup from "yup";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
-import { auth } from "../../../firebase";
+import { firestore, auth } from "../../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, setDoc, doc } from "firebase/firestore"; 
+import { useGlobalContext } from "../../../context"
 
 const validationSchema = Yup.object().shape({
   email1: Yup.string()
     .email("Please enter a valid email")
     .required("Email is required"),
   password: Yup.string().required("Password is required"),
+  fullname: Yup.string().required("Full name is required"),
+  contact: Yup.string().required("Contact number is required"),
+
 });
 
 export default function Signup() {
   const navigate = useNavigate();
   let [errorMsg, setErrorMsg] = useState("");
+
+  const { setEmail } = useGlobalContext();
+  //   const dispatch = useDispatch();
+  //   const loginStatus = useSelector((state) => state?.auth?.loginStatus);
+
   /**
+   * check if the user has already logged in,
+   * if so then navigate them to dashboard
+   */
+  //   React.useEffect(() => {
+  //     if (loginStatus === LOGGED_IN) {
+  //       navigate('/');
+  //     }
+  //   });
+
+  /**
+   * A function to handle the user submiting their credentials.
+   * If valid and 2fa is enabled, navigate them to the otp page.
+   * If valid and 2fa is not enabled, navigate them to the dashboard.
+   * If not valid then set the error status.
    *
    * @param {Object} values - The values from the form
    * @param {setStatus, setSubmitting} formikHelpers - helpers that formik provides
@@ -28,7 +52,14 @@ export default function Signup() {
   const onSubmit = async (values, { setStatus, setSubmitting }) => {
     setStatus();
     const username = values.email1;
+    const fullname = values.fullname;
+    const contact = values.contact;
+    const address = "";
     const { password } = values;
+    const hoppers = [""];
+    const requests = [""];
+
+
 
     try {
       const response = await createUserWithEmailAndPassword(
@@ -37,13 +68,31 @@ export default function Signup() {
         password
       );
 
+      const db = firestore;
+      const usersCollectionRef = collection(db, "users");
+
+      const user = {
+        fullname: fullname,
+        email: username,
+        contact: contact,
+        address: address,
+        hoppers: hoppers,
+        requests: requests
+      };
+     
+      const customDocumentId = username;
+      const userDocRef = doc(usersCollectionRef, customDocumentId);
+      await setDoc(userDocRef, user);
+
       if (response) {
-        console.log(response.user);
-        console.log(auth.currentUser.email);
+        //console.log(response.user);
+        /*console.log(auth.currentUser.email); */
+        setEmail(username);
         navigate("/home");
       } else throw new Error("Signup Failed");
+
     } catch (error) {
-      console.log(error.code);
+      console.log(error);
 
       switch (error.code) {
         case "auth/invalid-email":
@@ -91,6 +140,8 @@ export default function Signup() {
           initialValues={{
             email1: "",
             password: "",
+            contact: "",
+            fullname: ""
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
@@ -140,6 +191,65 @@ export default function Signup() {
                   </Typography>
                 )}
               </ErrorMessage>
+
+              <Field name="fullname">
+                {({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="filled"
+                    placeholder="Full name"
+                    autoComplete="off"
+                    error={
+                      touched.fullname &&
+                      (typeof errors.fullname !== "undefined" ||
+                        typeof status !== "undefined")
+                    }
+                    sx={{
+                      width: "296px",
+                    }}
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="fullname" data-testid="fullnameError">
+                {(msg) => (
+                  <Typography
+                    variant="caption1"
+                    sx={{ color: (theme) => theme.palette.error.main }}
+                  >
+                    {msg}
+                  </Typography>
+                )}
+              </ErrorMessage>
+
+              <Field name="contact">
+                {({ field }) => (
+                  <TextField
+                    {...field}
+                    variant="filled"
+                    placeholder="Contact Number"
+                    autoComplete="off"
+                    error={
+                      touched.contact &&
+                      (typeof errors.name !== "undefined" ||
+                        typeof status !== "undefined")
+                    }
+                    sx={{
+                      width: "296px",
+                    }}
+                  />
+                )}
+              </Field>
+              <ErrorMessage name="contact" data-testid="contactError">
+                {(msg) => (
+                  <Typography
+                    variant="caption1"
+                    sx={{ color: (theme) => theme.palette.error.main }}
+                  >
+                    {msg}
+                  </Typography>
+                )}
+              </ErrorMessage>
+
               <Field name="password">
                 {({ field }) => (
                   <TextField

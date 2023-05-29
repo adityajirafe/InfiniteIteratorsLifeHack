@@ -9,9 +9,48 @@ import {
   DistanceMatrixService,
 } from "@react-google-maps/api";
 import { checkWithinRadius, getCoords } from "../../geometry";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../context"
+import { firestore } from "../../firebase";
+import { collection, doc, getDoc } from "firebase/firestore";
 import { googleLibraries } from "../../geometry";
 
 export default function Home() {
+  // firebase
+  
+  const { email, address, setAddress } = useGlobalContext();
+  const navigate = useNavigate();
+  const goNeighbours = () => { navigate("/neighbours") }
+  const goMatched = () => { navigate("/matched") }
+
+  if (email !== "") {
+    const db = firestore;
+    const usersCollectionRef = collection(db, 'users');
+    const documentRef = doc(usersCollectionRef, email);
+
+    getDoc(documentRef)
+    .then((doc) => {
+      if (doc.exists) {
+        const data = doc.data();
+      } else {
+        console.log('Document not found');
+      }
+    })
+    .catch((error) => {
+      console.log('Error getting document:', error);
+    });
+  }
+
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+  const handleSaveClick = () => {
+    setAddress(inputValue)
+  };
+  
+  // googlemaps
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: googleLibraries,
@@ -192,6 +231,13 @@ export default function Home() {
         <Button onClick={getMatrix}>Calculate Route</Button>
         <Typography>{distance}</Typography>
       </Box>
+    <button onClick={goNeighbours}> My neighbours </button>
+    <button onClick={goMatched}> My ride </button>
+   
+    <div>
+      <input type="text" value={inputValue} onChange={handleInputChange} />
+      <button onClick={handleSaveClick}>Save</button>
+    </div>
     </Box>
   );
 }
