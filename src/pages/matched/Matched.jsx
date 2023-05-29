@@ -49,96 +49,53 @@ export default function Matched() {
     const successfulMatch = async (email) => {
         const userDoc = doc(usersCollection, email);
         const docSnapshot = await getDoc(userDoc);
-        
+      
         if (docSnapshot.exists()) {
-            const documentData = docSnapshot.data();
-            const requests = documentData.requests;
-            console.log("requests", requests)
-            
-            requests.forEach((req) => {
-                if (req === "") {
-                    console.log("skip");
-                } else {
-                    const userDoc2 = doc(usersCollection, req);
-                    getDoc(userDoc2)
-                    .then((docSnapshot) => {        
-                        if (docSnapshot.exists()) {
-                            const documentData2 = docSnapshot.data();
-                            const requests2 = documentData2.requests; // see this person's requests
-                            //console.log('requests222:', requests2);
-                            //console.log(req);
-                            //console.log(requests2.includes(email)); // check if I'm in their requests
-
-                            if(requests2.includes(email)) {
-                                const myHoppers =  documentData.hoppers
-                                const matchHoppers = documentData2.hoppers
-                                const myUpdatedhoppers = documentData.hoppers.concat(matchHoppers).concat(req);
-                                const matchUpdatedhoppers = documentData2.hoppers.concat(myHoppers).concat(email);
-                                //console.log("matchUpdatedhoppers",matchUpdatedhoppers)
-                                //console.log("myUpdatedhoppers",myUpdatedhoppers)
-                                updateDoc(userDoc, {
-                                    hoppers: myUpdatedhoppers
-                                  })
-                                updateDoc(userDoc2, {
-                                    hoppers: matchUpdatedhoppers
-                                }) 
-                                
-                                
-                                const uniqueArray = Array.from(new Set(myUpdatedhoppers));
-                                setHoppers(uniqueArray)
-                                console.log("helloooo")
-                                console.log(uniqueArray)
-                            }
-                        }
-                    });
-                } 
-            });
-        }  
-    }
-      requests.forEach((req) => {
-        if (req === "") {
-          console.log("skip");
-        } else {
-          console.log(req);
-          const userDoc2 = doc(usersCollection, req);
-          getDoc(userDoc2).then((docSnapshot) => {
-            if (docSnapshot.exists()) {
-              const documentData2 = docSnapshot.data();
-              const requests2 = documentData2.requests; // see this person's requests
-              //console.log('requests222:', requests2);
-              //console.log(req);
-              //console.log(requests2.includes(email)); // check if I'm in their requests
-
-              if (requests2.includes(email)) {
-                const myHoppers = documentData.hoppers;
-                console.log("MY HOPPERS:", myHoppers);
-                const matchHoppers = documentData2.hoppers;
-                const myUpdatedhoppers = documentData.hoppers
-                  .concat(matchHoppers)
-                  .concat(req);
-                const matchUpdatedhoppers = documentData2.hoppers
-                  .concat(myHoppers)
-                  .concat(email);
-                //console.log("matchUpdatedhoppers",matchUpdatedhoppers)
-                //console.log("myUpdatedhoppers",myUpdatedhoppers)
-                updateDoc(userDoc, {
-                  hoppers: myUpdatedhoppers,
+          const documentData = docSnapshot.data();
+          const { requests } = documentData;
+          console.log('requests', requests);
+      
+          requests.forEach((req) => {
+            if (req === '') {
+              console.log('skip');
+            } else {
+              const userDoc2 = doc(usersCollection, req);
+              getDoc(userDoc2)
+                .then((docSnapshot) => {
+                  if (docSnapshot.exists()) {
+                    const documentData2 = docSnapshot.data();
+                    const requests2 = documentData2.requests; // see this person's requests
+                    // console.log('requests222:', requests2);
+                    // console.log(req);
+                    // console.log(requests2.includes(email)); // check if I'm in their requests
+      
+                    if (requests2.includes(email)) {
+                      const myHoppers = documentData.hoppers;
+                      const matchHoppers = documentData2.hoppers;
+                      const myUpdatedhoppers = documentData.hoppers.concat(matchHoppers).concat(req);
+                      const matchUpdatedhoppers = documentData2.hoppers.concat(myHoppers).concat(email);
+                      // console.log("matchUpdatedhoppers",matchUpdatedhoppers)
+                      // console.log("myUpdatedhoppers",myUpdatedhoppers)
+                      updateDoc(userDoc, {
+                        hoppers: myUpdatedhoppers
+                      });
+                      updateDoc(userDoc2, {
+                        hoppers: matchUpdatedhoppers
+                      });
+      
+                      const uniqueArray = Array.from(new Set(myUpdatedhoppers));
+                      setHoppers(uniqueArray);
+                      console.log('helloooo');
+                      console.log(uniqueArray);
+                    }
+                  }
                 });
-                updateDoc(userDoc2, {
-                  hoppers: matchUpdatedhoppers,
-                });
-
-                const uniqueArray = Array.from(new Set(myUpdatedhoppers));
-                setHoppers(uniqueArray);
-              }
             }
           });
         }
-      });
-    }
-    await getAddresses(email);
-  };
-
+        await getAddresses(email);
+      };
+      
   const [routes, setRoutes] = useState(null);
 
   //   const findRoute = async () => {
@@ -314,11 +271,14 @@ export default function Matched() {
   };
 
   const deleteUser = async () => {
-    await deleteDoc(doc(db, "users", "test2@gmail.com"));
-    await deleteDoc(doc(db, "users", "joe@gmail.com"));
+    await deleteDoc(doc(db, "users", "adityajirafe@gmail.com"));
   };
+  
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    //deleteUser() uncomment this to delete doc if necessary (when its making too many queries)
+    successfulMatch(email);
+  }, []);
 
   const onDirectionTo = () => {
     setDirection("to");
@@ -338,7 +298,7 @@ export default function Matched() {
 
   if (!isLoaded) {
     return (
-        <Box>
+      <>
         <Box
           sx={{
             backgroundColor: "#FFFFFF",
@@ -346,12 +306,6 @@ export default function Matched() {
         >
           <Typography> is Loading</Typography>
         </Box>
-
-        <div>
-          {hoppers.map((documentId) => (
-            <ProfileCard key={documentId} documentId={documentId} />
-          ))}
-        </div>
       </>
     );
   }
@@ -433,13 +387,14 @@ export default function Matched() {
           // id= {`requestButton_${documentId}`}
           onClick={successfulMatch}
           sx={{
-            backgroundColor:
-              direction === "from"
-                ? (theme) => theme.palette.secondary.main
-                : "#36454F",
+            backgroundColor: "#36454F",
             "&:hover": {
               background: (theme) => theme.palette.secondary.main,
             },
+            whiteSpace: 'nowrap',
+            marginLeft: '24px',
+            marginRight: '24px',
+            width: '300px'
           }}
         >
           <Typography
@@ -456,13 +411,13 @@ export default function Matched() {
           // id= {`requestButton_${documentId}`}
           onClick={getAddresses}
           sx={{
-            backgroundColor:
-              direction === "from"
-                ? (theme) => theme.palette.secondary.main
-                : "#36454F",
+            backgroundColor: "#36454F",
             "&:hover": {
               background: (theme) => theme.palette.secondary.main,
             },
+            whiteSpace: 'nowrap',
+            width: '300px',
+            marginRight: '24px'
           }}
         >
           <Typography
@@ -472,6 +427,19 @@ export default function Matched() {
           >
             Get Route
           </Typography>
+        </Button>
+
+        <Button
+          variant="filled"
+          sx={{
+            backgroundColor: "#36454F",
+            "&:hover": {
+              backgroundColor: '#36454F',
+            },
+            whiteSpace: 'nowrap',
+            width: '300px'
+          }}
+        >
           <Typography
             sx={{
               color: "#FFFFFF",
@@ -545,21 +513,22 @@ export default function Matched() {
         </GoogleMap>
       </Box>
 
-      <Box display="flex" flexDirection="row" flexWrap={true} width="97%">
-        {/* {documentsArray.map((documentId) => (
-                    <ProfileCard key={documentId} documentId={documentId} isRequest={false} />
-                ))} */}
+      <Box 
+        display="flex" 
+        flexDirection="row" 
+        flexWrap={true} 
+        justifyContent="center"
+        width="97%"
+        margin="0px 24px"
+        marginRight="24px"
+        >
+            {hoppers.map((documentId) => {
+                if (documentId === "") {
+                    return null; // Skips this iteration
+                }
+                    return <ProfileCard key={documentId} documentId={documentId} sx={{ margin: '24px'}}/>;
+            })}
       </Box>
     </Box>
   );
-                {hoppers.map((documentId) => {
-                    if (documentId === "") {
-                    return null; // Skips this iteration
-                    }
-                    return <ProfileCard key={documentId} documentId={documentId} />;
-                })}
-            </Box>      
-        </Box>
-        
-    );
 }
