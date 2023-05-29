@@ -19,14 +19,11 @@ function Header() {
         <Button color="inherit" component={Link} to="/home">
           Home
         </Button>
-        <Button color="inherit" component={Link} to="/requests">
-          Requests
+        <Button color="inherit" component={Link} to="/neighbours">
+          Neighbours
         </Button>
-        <Button color="inherit" component={Link} to="/groupings">
-          Groupings
-        </Button>
-        <Button color="inherit" component={Link} to="/map">
-          Map
+        <Button color="inherit" component={Link} to="/matched">
+          Matched
         </Button>
         {!email ? (
         <>

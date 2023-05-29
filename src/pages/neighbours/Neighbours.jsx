@@ -121,31 +121,6 @@ export default function Neighbours() {
           <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
           ))}
 
-          {/* to delete (start) */}
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-          {/* to delete (end) */}
         </Box>
 
         <Box
