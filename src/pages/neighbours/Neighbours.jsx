@@ -47,7 +47,7 @@ export default function Neighbours() {
 
   return (
     <>
-      <Box sx={{ backgroundColor: "#FF0" }}>
+      <Box sx={{ backgroundColor: "#FFFFFF" }}>
         <Typography
           sx={{
             fontSize: "100px",

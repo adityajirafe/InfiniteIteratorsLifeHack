@@ -179,7 +179,7 @@ export default function Home() {
       <>
         <Box
           sx={{
-            backgroundColor: "#FF0",
+            backgroundColor: "#FFFFFF",
           }}
         >
           <Typography> is Loading</Typography>
@@ -191,7 +191,7 @@ export default function Home() {
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
-          backgroundColor: "#FF0",
+          backgroundColor: "#FFFFFF",
           //   display: "flex",
           height: "60vh",
           width: "100vw",

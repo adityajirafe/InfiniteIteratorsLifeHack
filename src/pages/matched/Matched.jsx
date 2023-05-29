@@ -94,7 +94,7 @@ export default function Matched() {
       
     return (
         <>
-        <Box sx={{ backgroundColor: '#FF0' }}>
+        <Box sx={{ backgroundColor: '#FFFFFF' }}>
             <Typography sx={{ fontSize: '100px', justifyContent: 'center', alignItems: 'center' }}>matched</Typography>
         </Box>
         <button onClick={() => successfulMatch(email)}> testing </button>

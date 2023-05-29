@@ -127,7 +127,7 @@ export default function Map() {
       <>
         <Box
           sx={{
-            backgroundColor: "#FF0",
+            backgroundColor: "#FFFFFF",
           }}
         >
           <Typography> is Loading</Typography>
@@ -139,7 +139,7 @@ export default function Map() {
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
-          backgroundColor: "#FF0",
+          backgroundColor: "#FFFFFF",
           //   display: "flex",
           height: "93vh",
           width: "100vw",
