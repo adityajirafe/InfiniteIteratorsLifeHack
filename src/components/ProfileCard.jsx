@@ -19,7 +19,7 @@ const CardContainer = styled(Box)(({ theme }) => (
   }
 ));
 
-const ProfileCard = ({ documentId }) => {
+const ProfileCard = ({ documentId, isRequest }) => {
   const { email } = useGlobalContext();
   const [fullname, setFullname] = useState('');
   const [contact, setContact] = useState('');
@@ -106,7 +106,7 @@ const ProfileCard = ({ documentId }) => {
               color: "#FFFFFF"
             }}
           >
-            Contact : {contact}
+            Contact: {contact}
           </Typography>
         </Box>
 
@@ -121,7 +121,7 @@ const ProfileCard = ({ documentId }) => {
               color: "#FFFFFF"
             }}
           >
-            address: {address}
+            Address: {address}
           </Typography>
 
           <Typography
@@ -129,11 +129,12 @@ const ProfileCard = ({ documentId }) => {
               color: "#FFFFFF"
             }}
           >
-            email: {documentId}
+            Email: {documentId}
           </Typography>
         </Box>
-
-        <Button
+        
+        {isRequest && (
+          <Button
           variant="filled" 
           id= {`requestButton_${documentId}`}
           onClick={() => handleRequest(documentId, email)}
@@ -151,8 +152,8 @@ const ProfileCard = ({ documentId }) => {
           >
             Request
           </Typography>
-        </Button> 
-
+        </Button>
+        )}
       </Box>
             
     </CardContainer>
