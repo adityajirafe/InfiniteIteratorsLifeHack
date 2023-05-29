@@ -195,13 +195,12 @@ export default function Map() {
               inputRef={originRef}
               sx={{
                 width: "296px",
-                borderRadius: "30px"
+                borderRadius: "30px",
               }}
             />
+            
           </Autocomplete>
-          <br />
           <Button onClick={calculateRoute}>Calculate Route</Button>
-          <Typography>{distance}</Typography>
         </Box>
       </Box>
     </Box>
