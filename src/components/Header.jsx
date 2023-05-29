@@ -4,7 +4,12 @@ import { Link } from "react-router-dom";
 import { useGlobalContext } from "../context";
 
 function Header() {
-  const { email } = useGlobalContext();
+  const { email, setEmail, address, setAddress, township, setTownship } = useGlobalContext();
+  const onLogout = () => {
+    setEmail("");
+    setAddress("");
+    setTownship("");
+  }
   return (
     <AppBar position="static" sx={{ width: "100vw", backgroundColor: (theme) => theme.palette.primary.main  }}>
       <Toolbar>
@@ -33,7 +38,7 @@ function Header() {
         </Button>
         </>
         ) : (
-          <Button color="inherit" component={Link} to="/home">
+        <Button color="inherit" component={Link} to="/login" onClick={onLogout}>
           Logout
         </Button>
         )}
