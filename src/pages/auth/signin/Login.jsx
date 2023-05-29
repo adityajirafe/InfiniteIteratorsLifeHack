@@ -108,17 +108,20 @@ export default function Login() {
       height="100vh"
       justifyContent="center"
       alignItems="center"
-      sx={{
-        backgroundColor: (theme) => theme.palette.background.secondary,
-      }}
+      backgroundColor="#e5f1fc"
     >
       <Box
         display="flex"
         flexDirection="column"
         alignItems="flex-start"
         gap="32px"
+        padding="90px"
+        borderRadius="30px"
+        sx={{
+          backgroundColor: (theme) => theme.palette.background.main,
+        }}
       >
-        <Typography variant="h2">Sign in</Typography>
+        <Typography variant="h2">Login</Typography>
         {/* <GoogleAppleSignin /> */}
         <Formik
           initialValues={{
@@ -268,7 +271,7 @@ export default function Login() {
             variant="body2Semibold"
             sx={{ color: (theme) => theme.palette.text.secondary }}
           >
-            Don&apos;t have an account
+            Don&apos;t have an account?
           </Typography>
           <Typography variant="body2Semibold" component={Link} to="/signup">
             Sign up

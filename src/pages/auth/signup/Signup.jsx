@@ -76,15 +76,18 @@ export default function Signup() {
       height="100vh"
       justifyContent="center"
       alignItems="center"
-      sx={{
-        backgroundColor: (theme) => theme.palette.background.secondary,
-      }}
+      backgroundColor="#e5f1fc"
     >
       <Box
         display="flex"
         flexDirection="column"
         alignItems="flex-start"
         gap="32px"
+        padding="90px"
+        borderRadius="30px"
+        sx={{
+          backgroundColor: (theme) => theme.palette.background.main,
+        }}
       >
         <Typography variant="h2">Sign Up</Typography>
         <Formik
@@ -112,12 +115,13 @@ export default function Signup() {
                 gap: "12px",
               }}
             >
+              <Typography variant="h6">Email Address</Typography>
               <Field name="email1">
                 {({ field }) => (
                   <TextField
                     {...field}
                     variant="filled"
-                    placeholder="Email address"
+                    placeholder="email@example.com"
                     autoComplete="off"
                     error={
                       touched.email1 &&
@@ -140,12 +144,13 @@ export default function Signup() {
                   </Typography>
                 )}
               </ErrorMessage>
+              <Typography variant="h6">Password</Typography>
               <Field name="password">
                 {({ field }) => (
                   <TextField
                     {...field}
                     variant="filled"
-                    placeholder="Password"
+                    placeholder="password"
                     error={
                       touched.password &&
                       (typeof errors.password !== "undefined" ||
@@ -220,7 +225,7 @@ export default function Signup() {
             variant="body2Semibold"
             sx={{ color: (theme) => theme.palette.text.secondary }}
           >
-            Already have an account
+            Already have an account?
           </Typography>
           <Typography variant="body2Semibold" component={Link} to="/login">
             Sign in
