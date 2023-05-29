@@ -1,7 +1,7 @@
 import "./App.css";
 // /* eslint-disable react/no-multi-comp */
-import React from "react";
-import { ThemeProvider } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { ThemeProvider, createTheme } from "@mui/material";
 import theme from "./theme";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Page from "./components/Page";
@@ -13,8 +13,14 @@ const Home = React.lazy(() => import("./pages/home"));
 const Map = React.lazy(() => import("./pages/map"));
 const Neighbours = React.lazy(() => import('./pages/neighbours'));
 const Matched = React.lazy(() => import('./pages/matched'));
+const Settings = React.lazy(() => import('./pages/settings/Settings'));
+
 
 function App() {
+  const [primary, setPrimary] = useState('');
+  const [secondary, setSecondary] = useState('');
+  const [address, setAddress] = useState('');
+
   return (
     <ThemeProvider theme={theme}>
       <BrowserRouter>
@@ -58,6 +64,11 @@ function App() {
               exact={true}
               path="/matched"
               element={<Page component={<Matched />} title="Matched" />}
+            />
+            <Route
+              exact={true}
+              path="/settings"
+              element={<Page component={<Settings primary={primary} setPrimary={setPrimary} secondary={secondary} setSecondary={setSecondary} address={address} setAddress={setAddress} />} title="Settings" />}
             />
           </Routes>
         </React.Suspense>
