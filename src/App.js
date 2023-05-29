@@ -53,10 +53,11 @@ function App() {
               path="/neighbours"
               element={<Page component={<Neighbours />} title="Map" />}
             />
+
             <Route
               exact={true}
               path="/matched"
-              element={<Page component={<Matched />} title="Match" />}
+              element={<Page component={<Matched />} title="Matched" />}
             />
           </Routes>
         </React.Suspense>
