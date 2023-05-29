@@ -1,4 +1,4 @@
-import { isPointWithinRadius } from "geolib";
+import { isPointWithinRadius, getDistance } from "geolib";
 
 export const getCoords = async (address) => {
   // eslint-disable-next-line no-undef
@@ -24,16 +24,33 @@ export const getCoords = async (address) => {
 };
 
 export const checkWithinRadius = async (address) => {
+  const RADIUS = 5000;
   try {
     const coords = await getCoords(address);
     const results = Object.entries(TOWNSHIPS).map(([township, coordinates]) => {
-      const result = isPointWithinRadius(coords, coordinates, 5000);
-      return { township, result };
+      const result = isPointWithinRadius(coords, coordinates, RADIUS);
+      let dist = RADIUS + 1;
+      if (result) {
+        dist = getDistance(coords, coordinates);
+      }
+      return { township, dist };
     });
-    return results;
+    const minDistanceTownship = results.reduce((min, curr) => {
+      return curr.dist < min.dist ? curr : min;
+    });
+
+    if (minDistanceTownship.dist <= RADIUS) {
+      return minDistanceTownship;
+    } else {
+      return {
+        township: null,
+        dist: null,
+        message: "No townships within radius",
+      };
+    }
   } catch (error) {
     console.error(error);
-    return [];
+    return { township: null, dist: null, message: "Error occurred" };
   }
 };
 

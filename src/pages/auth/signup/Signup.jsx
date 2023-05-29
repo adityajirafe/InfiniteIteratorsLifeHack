@@ -9,8 +9,8 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { firestore, auth } from "../../../firebase";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, setDoc, doc } from "firebase/firestore"; 
-import { useGlobalContext } from "../../../context"
+import { collection, setDoc, doc } from "firebase/firestore";
+import { useGlobalContext } from "../../../context";
 
 const validationSchema = Yup.object().shape({
   email1: Yup.string()
@@ -19,7 +19,6 @@ const validationSchema = Yup.object().shape({
   password: Yup.string().required("Password is required"),
   fullname: Yup.string().required("Full name is required"),
   contact: Yup.string().required("Contact number is required"),
-
 });
 
 export default function Signup() {
@@ -55,11 +54,10 @@ export default function Signup() {
     const fullname = values.fullname;
     const contact = values.contact;
     const address = "";
+    const township = "";
     const { password } = values;
     const hoppers = [""];
     const requests = [""];
-
-
 
     try {
       const response = await createUserWithEmailAndPassword(
@@ -77,9 +75,10 @@ export default function Signup() {
         contact: contact,
         address: address,
         hoppers: hoppers,
-        requests: requests
+        requests: requests,
+        township: township,
       };
-     
+
       const customDocumentId = username;
       const userDocRef = doc(usersCollectionRef, customDocumentId);
       await setDoc(userDocRef, user);
@@ -90,7 +89,6 @@ export default function Signup() {
         setEmail(username);
         navigate("/home");
       } else throw new Error("Signup Failed");
-
     } catch (error) {
       console.log(error);
 
@@ -141,7 +139,7 @@ export default function Signup() {
             email1: "",
             password: "",
             contact: "",
-            fullname: ""
+            fullname: "",
           }}
           validationSchema={validationSchema}
           onSubmit={onSubmit}

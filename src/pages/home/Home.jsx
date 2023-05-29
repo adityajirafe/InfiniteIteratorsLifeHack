@@ -10,35 +10,39 @@ import {
 } from "@react-google-maps/api";
 import { checkWithinRadius, getCoords } from "../../geometry";
 import { useNavigate } from "react-router-dom";
-import { useGlobalContext } from "../../context"
+import { useGlobalContext } from "../../context";
 import { firestore } from "../../firebase";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { googleLibraries } from "../../geometry";
 
 export default function Home() {
   // firebase
-  
-  const { email, address, setAddress } = useGlobalContext();
+
+  const { email, address, setAddress, setTownship } = useGlobalContext();
   const navigate = useNavigate();
-  const goNeighbours = () => { navigate("/neighbours") }
-  const goMatched = () => { navigate("/matched") }
+  const goNeighbours = () => {
+    navigate("/neighbours");
+  };
+  const goMatched = () => {
+    navigate("/matched");
+  };
 
   if (email !== "") {
     const db = firestore;
-    const usersCollectionRef = collection(db, 'users');
+    const usersCollectionRef = collection(db, "users");
     const documentRef = doc(usersCollectionRef, email);
 
     getDoc(documentRef)
-    .then((doc) => {
-      if (doc.exists) {
-        const data = doc.data();
-      } else {
-        console.log('Document not found');
-      }
-    })
-    .catch((error) => {
-      console.log('Error getting document:', error);
-    });
+      .then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+        } else {
+          console.log("Document not found");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
   }
 
   const [inputValue, setInputValue] = useState("");
@@ -46,10 +50,19 @@ export default function Home() {
   const handleInputChange = (event) => {
     setInputValue(event.target.value);
   };
-  const handleSaveClick = () => {
-    setAddress(inputValue)
+  const handleSaveClick = async () => {
+    const coords = await getCoords(inputValue);
+    setLat(coords.latitude);
+    setLng(coords.longitude);
+    setAddress(inputValue);
+    const township = (await checkWithinRadius(inputValue)).township;
+    console.log(township);
+    setTownship(township);
+    const db = firestore;
+    const townshipRef = doc(collection(db, township), email);
+    await setDoc(townshipRef, {});
   };
-  
+
   // googlemaps
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -223,21 +236,18 @@ export default function Home() {
         }}
       >
         <Autocomplete>
-          <Input placeholder="Input Origin" inputRef={originRef} />
+          <Input
+            placeholder="Input Origin"
+            onChange={handleInputChange}
+            value={inputValue}
+          />
         </Autocomplete>
-        <Autocomplete>
-          <Input placeholder="Input Destination" inputRef={destinationRef} />
-        </Autocomplete>
-        <Button onClick={getMatrix}>Calculate Route</Button>
+        <Button onClick={handleSaveClick}>Save Address</Button>
         <Typography>{distance}</Typography>
+
+        <button onClick={goNeighbours}> My neighbours </button>
+        <button onClick={goMatched}> My ride </button>
       </Box>
-    <button onClick={goNeighbours}> My neighbours </button>
-    <button onClick={goMatched}> My ride </button>
-   
-    <div>
-      <input type="text" value={inputValue} onChange={handleInputChange} />
-      <button onClick={handleSaveClick}>Save</button>
-    </div>
     </Box>
   );
 }
