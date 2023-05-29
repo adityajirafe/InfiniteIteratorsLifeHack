@@ -9,6 +9,7 @@ import { Formik, Field, Form, ErrorMessage } from "formik";
 import { useNavigate, Link } from "react-router-dom";
 import { auth } from "../../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { useGlobalContext } from "../../../context"
 
 const validationSchema = Yup.object().shape({
   email1: Yup.string()
@@ -20,6 +21,8 @@ const validationSchema = Yup.object().shape({
 export default function Login() {
   const navigate = useNavigate();
   let [errorMsg, setErrorMsg] = useState("");
+
+  const { setEmail } = useGlobalContext();
   //   const dispatch = useDispatch();
   //   const loginStatus = useSelector((state) => state?.auth?.loginStatus);
 
@@ -55,8 +58,9 @@ export default function Login() {
       );
 
       if (response) {
-        console.log(response.user);
-        console.log(auth.currentUser.email);
+        //console.log(response.user);
+        //console.log(auth.currentUser.email);
+        setEmail(username);
         navigate("/home");
       } else throw new Error("Login Failed");
     } catch (error) {

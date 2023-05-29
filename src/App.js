@@ -11,6 +11,8 @@ const Login = React.lazy(() => import("./pages/auth/signin/Login"));
 const SignUp = React.lazy(() => import("./pages/auth/signup/Signup"));
 const Home = React.lazy(() => import("./pages/home"));
 const Map = React.lazy(() => import("./pages/map"));
+const Neighbours = React.lazy(() => import('./pages/neighbours'));
+const Matched = React.lazy(() => import('./pages/matched'));
 
 function App() {
   return (

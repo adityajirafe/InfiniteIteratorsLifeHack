@@ -8,10 +8,62 @@ import {
   DirectionsRenderer,
   DistanceMatrixService,
 } from "@react-google-maps/api";
-import { getCoords } from "../../geometry";
+import { checkWithinRadius, getCoords } from "../../geometry";
+import { useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../context";
+import { firestore } from "../../firebase";
+import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { googleLibraries } from "../../geometry";
 
 export default function Home() {
+  // firebase
+
+  const { email, address, setAddress, setTownship } = useGlobalContext();
+  const navigate = useNavigate();
+  const goNeighbours = () => {
+    navigate("/neighbours");
+  };
+  const goMatched = () => {
+    navigate("/matched");
+  };
+
+  if (email !== "") {
+    const db = firestore;
+    const usersCollectionRef = collection(db, "users");
+    const documentRef = doc(usersCollectionRef, email);
+
+    getDoc(documentRef)
+      .then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+        } else {
+          console.log("Document not found");
+        }
+      })
+      .catch((error) => {
+        console.log("Error getting document:", error);
+      });
+  }
+
+  const [inputValue, setInputValue] = useState("");
+
+  const handleInputChange = (event) => {
+    setInputValue(event.target.value);
+  };
+  const handleSaveClick = async () => {
+    const coords = await getCoords(inputValue);
+    setLat(coords.latitude);
+    setLng(coords.longitude);
+    setAddress(inputValue);
+    const township = (await checkWithinRadius(inputValue)).township;
+    console.log(township);
+    setTownship(township);
+    const db = firestore;
+    const townshipRef = doc(collection(db, township), email);
+    await setDoc(townshipRef, {});
+  };
+
+  // googlemaps
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     libraries: googleLibraries,
@@ -37,7 +89,8 @@ export default function Home() {
     const destination2 = "Singapore 819663";
     const destination3 = "Singapore 680563";
 
-    console.log("GEOCODER: ", getCoords(origin1));
+    // console.log("GEOCODER: ", getCoords(origin1));
+    console.log("result is ", checkWithinRadius(origin1));
 
     const request = {
       origins: [origin1],
@@ -50,9 +103,9 @@ export default function Home() {
       avoidTolls: false,
     };
 
-    service.getDistanceMatrix(request).then((response) => {
-      console.log(response);
-    });
+    // service.getDistanceMatrix(request).then((response) => {
+    //   console.log(response);
+    // });
   };
 
   async function calculateRoute() {
@@ -183,13 +236,17 @@ export default function Home() {
         }}
       >
         <Autocomplete>
-          <Input placeholder="Input Origin" inputRef={originRef} />
+          <Input
+            placeholder="Input Origin"
+            onChange={handleInputChange}
+            value={inputValue}
+          />
         </Autocomplete>
-        <Autocomplete>
-          <Input placeholder="Input Destination" inputRef={destinationRef} />
-        </Autocomplete>
-        <Button onClick={calculateRoute}>Calculate Route</Button>
+        <Button onClick={handleSaveClick}>Save Address</Button>
         <Typography>{distance}</Typography>
+
+        <button onClick={goNeighbours}> My neighbours </button>
+        <button onClick={goMatched}> My ride </button>
       </Box>
     </Box>
   );
