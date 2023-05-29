@@ -6,45 +6,54 @@ import { firestore } from "../../firebase";
 import { useGlobalContext } from "../../context";
 
 export default function Neighbours() {
-  // const { email } = useGlobalContext();
-  const email = "adi@gmail.com";
+  const { email } = useGlobalContext();
   const [documentsArray, setDocumentsArray] = useState([]);
   const [myTown, setMyTown] = useState("");
   const db = firestore;
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const myTownshipResult = await myTownship();
+        await fetchDocumentIds(myTownshipResult);
+      } catch (error) {
+        console.log('Error fetching data:', error);
+      }
+    };
+  
     const myTownship = async () => {
-      const docRef = doc(db, "users", email);
+      const docRef = doc(db, 'users', email);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log("Document data:", docSnap.data());
+        console.log('Document data:', docSnap.data());
         const data = docSnap.data();
         console.log(data.township);
         setMyTown(data.township);
+        return data.township;
       } else {
-        // docSnap.data() will be undefined in this case
-        console.log("No such document!");
+        console.log('No such document!');
+        return '';
       }
     };
-    myTownship();
-
-    const fetchDocumentIds = async () => {
+  
+    const fetchDocumentIds = async (myTownshipResult) => {
       try {
-        const collectionRef = collection(db, myTown);
+        const collectionRef = collection(db, myTownshipResult);
         const querySnapshot = await getDocs(collectionRef);
         let documents = querySnapshot.docs
           .map((doc) => doc.id)
-          .filter((id) => id !== email && id !== "info");
-        console.log("documents");
+          .filter((id) => id !== email && id !== 'info');
+        console.log('documents');
         console.log(documents);
         setDocumentsArray(documents);
       } catch (error) {
-        console.log("Error fetching document IDs:", error);
+        console.log('Error fetching document IDs:', error);
       }
     };
-    fetchDocumentIds();
+  
+    fetchData();
   }, []);
-
+  
   return (
     <>
       <Box sx={{ backgroundColor: "#FFFFFF" }}>
