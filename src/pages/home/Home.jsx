@@ -14,18 +14,12 @@ import { useGlobalContext } from "../../context";
 import { firestore } from "../../firebase";
 import { collection, doc, getDoc, setDoc } from "firebase/firestore";
 import { googleLibraries } from "../../geometry";
+import TextField from "@mui/material/TextField";
 
 export default function Home() {
   // firebase
 
   const { email, address, setAddress, setTownship } = useGlobalContext();
-  const navigate = useNavigate();
-  const goNeighbours = () => {
-    navigate("/neighbours");
-  };
-  const goMatched = () => {
-    navigate("/matched");
-  };
 
   if (email !== "") {
     const db = firestore;
@@ -193,12 +187,11 @@ export default function Home() {
         sx={{
           backgroundColor: "#FFFFFF",
           //   display: "flex",
-          height: "60vh",
+          height: "93vh",
           width: "100vw",
           position: "relative",
           flexDirection: "column",
           alignItems: "center",
-          zIndex: "modal",
         }}
       >
         <GoogleMap
@@ -225,28 +218,35 @@ export default function Home() {
       </Box>
       <Box
         sx={{
-          backgroundColor: (theme) => theme.palette.background.tabs,
+          backgroundColor: "white",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          //   zIndex: 1,
-          height: "40vh",
-          width: "100vw",
+          zIndex: 1,
+          height: "200px",
+          width: "425px",
+          position: "absolute",
+          top: 100,
+          right: 40,
+          borderRadius: "30px",
+          boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.3)",
         }}
       >
         <Autocomplete>
-          <Input
-            placeholder="Input Origin"
+          <TextField
+            variant="filled"
+            placeholder="Enter postal code"
             onChange={handleInputChange}
             value={inputValue}
+            sx={{
+              width: "296px",
+              borderRadius: "30px",
+            }}
           />
         </Autocomplete>
+        <br/>
         <Button onClick={handleSaveClick}>Save Address</Button>
-        <Typography>{distance}</Typography>
-
-        <button onClick={goNeighbours}> My neighbours </button>
-        <button onClick={goMatched}> My ride </button>
       </Box>
     </Box>
   );
