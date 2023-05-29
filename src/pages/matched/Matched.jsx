@@ -137,7 +137,10 @@ export default function Matched() {
         );
     }
 
-  
+    const handleChange = (e) => {
+        setSelectedDriver(e.target.value);
+    };
+
     return (
         <Box>
         <Box
@@ -239,7 +242,8 @@ export default function Matched() {
                 </InputLabel>
                 <CustomSelect
                     variant="outlined"
-                    value={selectedDriver ? selectedDriver?.fullname : 'Select a Driver'}
+                    value={selectedDriver?.fullname || ''}
+                    onChange={handleChange}
                 >
                 
 
