@@ -2,6 +2,22 @@ import { useState, useEffect } from 'react';
 import { firestore } from "../firebase";
 import { collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { useGlobalContext } from "../context"
+import { Box, Button, Typography, useTheme } from '@mui/material';
+import styled from '@emotion/styled';
+
+const CardContainer = styled(Box)(({ theme }) => (
+  { display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    padding: '16px',
+    margin: '0px 0px 16px 0px',
+    gap: '8px',
+    height: '84px',
+    borderRadius: '12px',
+    width: '90%',
+  }
+));
 
 const ProfileCard = ({ documentId }) => {
   const { email } = useGlobalContext();
@@ -61,10 +77,85 @@ const ProfileCard = ({ documentId }) => {
   }
 
   return (
-    <div>
-        Name: {fullname}, Contact : {contact}, address: {address} , email: {documentId}
-        <button id= {`requestButton_${documentId}`} onClick={() => handleRequest(documentId, email)}> request </button> 
-    </div>
+    <CardContainer
+      sx={{
+        backgroundColor: (theme) => theme.palette.primary.main,
+      }}
+    >
+    <Box
+      display="flex"
+      flexDirection="row"
+      justifyContent="space-between"
+      width="100%"
+    >
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-start"
+          alignItems="left"
+        >
+          <Typography
+            sx={{
+              color: "#FFFFFF"
+            }}
+          >
+            Name: {fullname}
+          </Typography>
+          <Typography
+            sx={{
+              color: "#FFFFFF"
+            }}
+          >
+            Contact : {contact}
+          </Typography>
+        </Box>
+
+        <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="flex-end"
+          alignItems="left"
+        >
+          <Typography
+            sx={{
+              color: "#FFFFFF"
+            }}
+          >
+            address: {address}
+          </Typography>
+
+          <Typography
+            sx={{
+              color: "#FFFFFF"
+            }}
+          >
+            email: {documentId}
+          </Typography>
+        </Box>
+
+        <Button
+          variant="filled" 
+          id= {`requestButton_${documentId}`}
+          onClick={() => handleRequest(documentId, email)}
+          sx={{
+            backgroundColor: '#36454F',
+            '&:hover': {
+              background: (theme) => theme.palette.secondary.main
+            }
+          }}
+        > 
+          <Typography
+            sx={{
+              color: "#FFFFFF"
+            }}
+          >
+            Request
+          </Typography>
+        </Button> 
+
+      </Box>
+            
+    </CardContainer>
   )
 };
 
