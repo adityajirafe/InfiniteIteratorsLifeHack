@@ -102,6 +102,19 @@ export default function Home() {
     // });
   };
 
+  /** @type React.MutableRefObject<HTMLInputElement> */
+  // const routes = useRef(null);
+
+  // const [routes, setRoutes] = useState(null);
+
+  // const getRoutes = async () => {
+  //   // routes.current.value = await findRoute()[1];
+  //   // const routes = await findRoute()[1];
+  //   // setRoutes(routes);
+  //   setRoutes(await findRoute()[1]);
+  //   console.log("ROUTES", routes);
+  // };
+
   async function calculateRoute() {
     if (originRef.current.value === "" || destinationRef.current.value === "") {
       return;
@@ -167,6 +180,107 @@ export default function Home() {
     }
   }
 
+  const [routes, setRoutes] = useState(null);
+
+  const WORK = [
+    {
+      lat: 1.2805182897109721,
+      lng: 103.85430153739446,
+    },
+  ];
+
+  const driver = [
+    {
+      lat: 1.430353468178358,
+      lng: 103.78573705283941,
+    },
+  ];
+
+  const passengers = [
+    {
+      lat: 1.4404865606459663,
+      lng: 103.79780752591975,
+    },
+    {
+      lat: 1.4449562454354568,
+      lng: 103.79048497059544,
+    },
+    //   {
+    //     latitude: 1.4445869699498342,
+    //     longitude: 103.80507396760258,
+    //   },
+  ];
+
+  const PERMUTATIONS = {
+    1: [[0, 1]],
+    2: [[0, 1, 2]],
+    3: [
+      [0, 1, 2, 3],
+      [0, 2, 1, 3],
+    ],
+    4: [
+      [0, 1, 2, 3, 4],
+      [0, 1, 3, 2, 4],
+      [0, 2, 3, 1, 4],
+      [0, 2, 1, 3, 4],
+      [0, 3, 1, 2, 4],
+      [0, 3, 2, 1, 4],
+    ],
+    5: [[0, 1, 2, 3, 4, 5]],
+    6: [[0, 1, 2, 3, 4, 5, 6]],
+    7: [[0, 1, 2, 3, 4, 5, 6, 7]],
+  };
+
+  const findRoute = async () => {
+    // eslint-disable-next-line no-undef
+    const directionService = new google.maps.DirectionsService();
+
+    const route = WORK.concat(passengers, driver);
+    console.log(route);
+    const numStops = passengers.length + 1;
+    const routeResult = {};
+
+    const numPermutations = PERMUTATIONS[numStops].length;
+    console.log(numPermutations);
+
+    for (var i = 0; i < numPermutations; i++) {
+      for (var j = 0; j < numStops - 1; j++) {
+        const results = await directionService.route({
+          origin: route[PERMUTATIONS[numStops][i][j]],
+          destination: route[PERMUTATIONS[numStops][i][j + 1]],
+          // eslint-disable-next-line no-undef
+          travelMode: google.maps.TravelMode.DRIVING,
+        });
+
+        if (routeResult.hasOwnProperty(i)) {
+          routeResult[i][0] += parseFloat(
+            results.routes[0].legs[0].distance.text.split(" ")
+          );
+          routeResult[i][1].push(results);
+        } else {
+          routeResult[i] = [
+            parseFloat(results.routes[0].legs[0].distance.text.split(" ")),
+            [results],
+          ];
+        }
+      }
+    }
+    let minDistance = Infinity;
+    let minPair = null;
+
+    for (const pair in routeResult) {
+      const distance = routeResult[pair][0];
+      if (distance < minDistance) {
+        minDistance = distance;
+        minPair = routeResult[pair][1];
+      }
+    }
+    console.log("PAIR: ", minPair);
+    setRoutes(minPair);
+  };
+
+  console.log("route", routes);
+
   const center = { lat: 1.3521, lng: 103.8198 };
   if (!isLoaded) {
     return (
@@ -181,6 +295,7 @@ export default function Home() {
       </>
     );
   }
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
@@ -204,11 +319,16 @@ export default function Home() {
             fullscreenControl: false,
             mapTypeControl: false,
           }}
-          onLoad={(map) => setMap(map)}
         >
-          {directionsResponse && (
-            <DirectionsRenderer directions={directionsResponse} />
-          )}
+          {/* {routes && <DirectionsRenderer directions={routes} />} */}
+          {routes &&
+            routes?.map((item) => (
+              <DirectionsRenderer
+                key={item.id}
+                directions={item}
+                options={{ preserveViewport: true }}
+              />
+            ))}
           {lat ? (
             <MarkerF position={{ lat: lat, lng: lng }} />
           ) : (
