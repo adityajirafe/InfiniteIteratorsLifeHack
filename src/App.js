@@ -48,6 +48,11 @@ function App() {
               path="/map"
               element={<Page component={<Map />} title="Map" />}
             />
+            <Route
+              exact={true}
+              path="/neighbours"
+              element={<Page component={<Neighbours />} title="Map" />}
+            />
           </Routes>
         </React.Suspense>
       </BrowserRouter>
