@@ -29,7 +29,7 @@ function App() {
           <Routes>
             <Route
               exact={true}
-              path="/login"
+              path="/"
               element={
                 <Page component={<Login />} title="Login Infinite Iterators" />
               }
@@ -49,15 +49,11 @@ function App() {
               path="/home"
               element={<Page component={<Home />} title="Home page" />}
             />
-            <Route
-              exact={true}
-              path="/map"
-              element={<Page component={<Map />} title="Map" />}
-            />
+            
             <Route
               exact={true}
               path="/neighbours"
-              element={<Page component={<Neighbours />} title="Map" />}
+              element={<Page component={<Neighbours />} title="Neighbours" />}
             />
 
             <Route

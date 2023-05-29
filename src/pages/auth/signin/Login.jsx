@@ -108,8 +108,8 @@ export default function Login() {
   return (
     <Box
       display="flex"
-      width="100vw"
-      height="93vh"
+      width="100%"
+      height="100vh"
       justifyContent="center"
       alignItems="center"
       backgroundColor="#e5f1fc"
@@ -123,7 +123,6 @@ export default function Login() {
         borderRadius="30px"
         sx={{
           backgroundColor: (theme) => theme.palette.background.main,
-          boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.3)",
         }}
       >
         <Typography variant="h2">Login</Typography>

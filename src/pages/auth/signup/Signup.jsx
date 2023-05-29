@@ -333,7 +333,7 @@ export default function Signup() {
           >
             Already have an account?
           </Typography>
-          <Typography variant="body2Semibold" component={Link} to="/login">
+          <Typography variant="body2Semibold" component={Link} to="/">
             Sign in
           </Typography>
         </Box>

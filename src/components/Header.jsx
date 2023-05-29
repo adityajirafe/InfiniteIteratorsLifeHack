@@ -34,7 +34,7 @@ function Header() {
         </Button>
         {!email ? (
           <>
-            <Button color="inherit" component={Link} to="/login">
+            <Button color="inherit" component={Link} to="/">
               Login
             </Button>
             <Button color="inherit" component={Link} to="/signup">
@@ -45,7 +45,7 @@ function Header() {
           <Button
             color="inherit"
             component={Link}
-            to="/login"
+            to="/"
             onClick={onLogout}
           >
             Logout
