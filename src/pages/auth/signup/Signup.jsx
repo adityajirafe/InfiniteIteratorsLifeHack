@@ -119,8 +119,8 @@ export default function Signup() {
   return (
     <Box
       display="flex"
-      width="100%"
-      height="100vh"
+      width="100vw"
+      height="93vh"
       justifyContent="center"
       alignItems="center"
       backgroundColor="#e5f1fc"
@@ -134,6 +134,7 @@ export default function Signup() {
         borderRadius="30px"
         sx={{
           backgroundColor: (theme) => theme.palette.background.main,
+          boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.3)",
         }}
       >
         <Typography variant="h2">Sign Up</Typography>
@@ -164,13 +165,12 @@ export default function Signup() {
                 gap: "12px",
               }}
             >
-              <Typography variant="h6">Email Address</Typography>
               <Field name="email1">
                 {({ field }) => (
                   <TextField
                     {...field}
                     variant="filled"
-                    placeholder="email@example.com"
+                    placeholder="Email Address"
                     autoComplete="off"
                     error={
                       touched.email1 &&
@@ -251,8 +251,6 @@ export default function Signup() {
                   </Typography>
                 )}
               </ErrorMessage>
-
-              <Typography variant="h6">Password</Typography>
               <Field name="password">
                 {({ field }) => (
                   <TextField

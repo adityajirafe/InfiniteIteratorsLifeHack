@@ -19,13 +19,6 @@ export default function Home() {
   // firebase
 
   const { email, address, setAddress, setTownship } = useGlobalContext();
-  const navigate = useNavigate();
-  const goNeighbours = () => {
-    navigate("/neighbours");
-  };
-  const goMatched = () => {
-    navigate("/matched");
-  };
 
   if (email !== "") {
     const db = firestore;
@@ -244,9 +237,6 @@ export default function Home() {
         </Autocomplete>
         <Button onClick={handleSaveClick}>Save Address</Button>
         <Typography>{distance}</Typography>
-
-        <button onClick={goNeighbours}> My neighbours </button>
-        <button onClick={goMatched}> My ride </button>
       </Box>
     </Box>
   );
