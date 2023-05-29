@@ -49,7 +49,6 @@ export default function Matched() {
                 if (req === "") {
                     console.log("skip");
                 } else {
-                    console.log(req);
                     const userDoc2 = doc(usersCollection, req);
                     getDoc(userDoc2)
                     .then((docSnapshot) => {        
@@ -77,8 +76,8 @@ export default function Matched() {
                                 
                                 const uniqueArray = Array.from(new Set(myUpdatedhoppers));
                                 setHoppers(uniqueArray)
-
-
+                                console.log("helloooo")
+                                console.log(uniqueArray)
                             }
                         }
                     });
@@ -119,13 +118,7 @@ export default function Matched() {
             <Typography> is Loading</Typography>
             </Box>
 
-            <div>
-
-            {hoppers.map((documentId) => (
-                <ProfileCard key={documentId} documentId={documentId} />
-            ))}
-
-            </div>
+            
         </>
         );
     }
@@ -136,6 +129,7 @@ export default function Matched() {
 
     return (
         <Box>
+    
         <Box
             display="flex"
             flexDirection="column"
@@ -282,10 +276,14 @@ export default function Matched() {
                 flexWrap={true}
                 width="97%"
             >
-                {/* {documentsArray.map((documentId) => (
-                    <ProfileCard key={documentId} documentId={documentId} isRequest={false} />
-                ))} */}  
+                {hoppers.map((documentId) => {
+                    if (documentId === "") {
+                    return null; // Skips this iteration
+                    }
+                    return <ProfileCard key={documentId} documentId={documentId} />;
+                })}
             </Box>      
         </Box>
+        
     );
 }
