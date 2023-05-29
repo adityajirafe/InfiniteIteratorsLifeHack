@@ -320,15 +320,6 @@ export default function Home() {
             mapTypeControl: false,
           }}
         >
-          {/* {routes && <DirectionsRenderer directions={routes} />} */}
-          {routes &&
-            routes?.map((item) => (
-              <DirectionsRenderer
-                key={item.id}
-                directions={item}
-                options={{ preserveViewport: true }}
-              />
-            ))}
           {lat ? (
             <MarkerF position={{ lat: lat, lng: lng }} />
           ) : (
@@ -365,7 +356,7 @@ export default function Home() {
             }}
           />
         </Autocomplete>
-        <br/>
+        <br />
         <Button onClick={handleSaveClick}>Save Address</Button>
       </Box>
     </Box>

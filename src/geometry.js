@@ -136,7 +136,7 @@ const passengers = [
   //   },
 ];
 
-const PERMUTATIONS = {
+export const PERMUTATIONS = {
   1: [[0, 1]],
   2: [[0, 1, 2]],
   3: [
