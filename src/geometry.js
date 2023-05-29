@@ -126,10 +126,10 @@ const passengers = [
     lat: 1.4404865606459663,
     lng: 103.79780752591975,
   },
-  {
-    lat: 1.4449562454354568,
-    lng: 103.79048497059544,
-  },
+  //   {
+  //     lat: 1.4449562454354568,
+  //     lng: 103.79048497059544,
+  //   },
   //   {
   //     latitude: 1.4445869699498342,
   //     longitude: 103.80507396760258,
@@ -190,7 +190,6 @@ export const findRoute = async () => {
       }
     }
   }
-  console.log(routeResult);
   let minDistance = Infinity;
   let minPair = null;
 
@@ -201,6 +200,6 @@ export const findRoute = async () => {
       minPair = routeResult[pair][1];
     }
   }
-
-  //   return minPair;
+  console.log(minPair);
+  return minPair[0];
 };
