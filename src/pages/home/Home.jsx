@@ -6,14 +6,18 @@ import {
   MarkerF,
   Autocomplete,
   DirectionsRenderer,
+  DistanceMatrixService,
 } from "@react-google-maps/api";
+import { getCoords } from "../../geometry";
+import { googleLibraries } from "../../geometry";
 
 export default function Home() {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: ["places", "geometry"],
+    libraries: googleLibraries,
   });
 
+  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [distance, setDistance] = useState("");
 
@@ -24,6 +28,32 @@ export default function Home() {
 
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
+
+  const getMatrix = async () => {
+    // eslint-disable-next-line no-undef
+    const service = new google.maps.DistanceMatrixService();
+    const origin1 = "Singapore 737938";
+    const destination1 = "Singapore 117417";
+    const destination2 = "Singapore 819663";
+    const destination3 = "Singapore 680563";
+
+    console.log("GEOCODER: ", getCoords(origin1));
+
+    const request = {
+      origins: [origin1],
+      destinations: [destination1, destination2, destination3],
+      // eslint-disable-next-line no-undef
+      travelMode: google.maps.TravelMode.DRIVING,
+      // eslint-disable-next-line no-undef
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false,
+    };
+
+    service.getDistanceMatrix(request).then((response) => {
+      console.log(response);
+    });
+  };
 
   async function calculateRoute() {
     if (originRef.current.value === "" || destinationRef.current.value === "") {
@@ -41,6 +71,11 @@ export default function Home() {
             resolve(results[0].geometry.location);
             setLat(results[0].geometry.location.lat());
             setLng(results[0].geometry.location.lng());
+            // map.panTo({
+            //   lat: results[0].geometry.location.lat(),
+            //   lng: results[0].geometry.location.lng(),
+            // });
+            // map.setZoom(15);
           } else {
             reject(new Error("Geocoding failed for origin address."));
           }
@@ -67,6 +102,7 @@ export default function Home() {
         originPromise,
         destinationPromise,
       ]);
+
       // eslint-disable-next-line no-undef
       const directionService = new google.maps.DirectionsService();
 
@@ -99,12 +135,12 @@ export default function Home() {
     );
   }
   return (
-    <>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
           backgroundColor: "#FF0",
           //   display: "flex",
-          height: "50vh",
+          height: "60vh",
           width: "100vw",
           position: "relative",
           flexDirection: "column",
@@ -122,23 +158,28 @@ export default function Home() {
             fullscreenControl: false,
             mapTypeControl: false,
           }}
+          onLoad={(map) => setMap(map)}
         >
-          <MarkerF position={center} />
           {directionsResponse && (
             <DirectionsRenderer directions={directionsResponse} />
           )}
-          {lat && <MarkerF position={{ lat: lat, lng: lng }} />}
+          {lat ? (
+            <MarkerF position={{ lat: lat, lng: lng }} />
+          ) : (
+            <MarkerF position={center} />
+          )}
         </GoogleMap>
       </Box>
       <Box
         sx={{
-          backgroundColor: "green",
-          justifySelf: "center",
-          alignSelf: "center",
+          backgroundColor: (theme) => theme.palette.background.tabs,
+          display: "flex",
           alignItems: "center",
           justifyContent: "center",
           flexDirection: "column",
-          zIndex: 1,
+          //   zIndex: 1,
+          height: "40vh",
+          width: "100vw",
         }}
       >
         <Autocomplete>
@@ -150,6 +191,6 @@ export default function Home() {
         <Button onClick={calculateRoute}>Calculate Route</Button>
         <Typography>{distance}</Typography>
       </Box>
-    </>
+    </Box>
   );
 }

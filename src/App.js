@@ -1,7 +1,8 @@
 import "./App.css";
 // /* eslint-disable react/no-multi-comp */
 import React from "react";
-
+import { ThemeProvider } from "@mui/material";
+import theme from "./theme";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Page from "./components/Page";
 
@@ -11,6 +12,7 @@ const Home = React.lazy(() => import("./pages/home"));
 
 function App() {
   return (
+    // <ThemeProvider them={theme}>
     <BrowserRouter>
       <React.Suspense>
         <Routes>
@@ -36,6 +38,7 @@ function App() {
         </Routes>
       </React.Suspense>
     </BrowserRouter>
+    // </ThemeProvider>
   );
 }
 
