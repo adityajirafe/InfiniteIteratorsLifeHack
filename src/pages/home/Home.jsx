@@ -8,7 +8,7 @@ import {
   DirectionsRenderer,
   DistanceMatrixService,
 } from "@react-google-maps/api";
-import { getCoords } from "../../geometry";
+import { checkWithinRadius, getCoords } from "../../geometry";
 import { googleLibraries } from "../../geometry";
 
 export default function Home() {
@@ -37,7 +37,8 @@ export default function Home() {
     const destination2 = "Singapore 819663";
     const destination3 = "Singapore 680563";
 
-    console.log("GEOCODER: ", getCoords(origin1));
+    // console.log("GEOCODER: ", getCoords(origin1));
+    console.log("result is ", checkWithinRadius(origin1));
 
     const request = {
       origins: [origin1],
@@ -50,9 +51,9 @@ export default function Home() {
       avoidTolls: false,
     };
 
-    service.getDistanceMatrix(request).then((response) => {
-      console.log(response);
-    });
+    // service.getDistanceMatrix(request).then((response) => {
+    //   console.log(response);
+    // });
   };
 
   async function calculateRoute() {
@@ -188,7 +189,7 @@ export default function Home() {
         <Autocomplete>
           <Input placeholder="Input Destination" inputRef={destinationRef} />
         </Autocomplete>
-        <Button onClick={calculateRoute}>Calculate Route</Button>
+        <Button onClick={getMatrix}>Calculate Route</Button>
         <Typography>{distance}</Typography>
       </Box>
     </Box>
