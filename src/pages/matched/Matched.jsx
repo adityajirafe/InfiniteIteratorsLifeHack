@@ -45,8 +45,9 @@ export default function Matched() {
   const [directionsResponse, setDirectionsResponse] = useState(null);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [direction, setDirection] = useState("");
+  const [pressed, setPressed] = useState(false);
 
-  const successfulMatch = async (email) => {
+  const successfulMatch = async () => {
     const userDoc = doc(usersCollection, email);
     const docSnapshot = await getDoc(userDoc);
 
@@ -96,6 +97,7 @@ export default function Matched() {
         }
       });
     }
+    setPressed(true);
     await getAddresses(email);
   };
 
@@ -278,7 +280,7 @@ export default function Matched() {
 
   useEffect(() => {
     //deleteUser() uncomment this to delete doc if necessary (when its making too many queries)
-    successfulMatch(email);
+    // successfulMatch(email);
   }, []);
 
   const onDirectionTo = () => {
@@ -387,6 +389,7 @@ export default function Matched() {
           variant="filled"
           // id= {`requestButton_${documentId}`}
           onClick={successfulMatch}
+          disabled={pressed}
           sx={{
             backgroundColor: "#36454F",
             "&:hover": {
@@ -523,22 +526,18 @@ export default function Matched() {
         margin="0px 24px"
         marginRight="24px"
       >
-        {hoppers.length === 0 ? (
-          <Typography variant="h5">You have no matches!</Typography>
-        ) : (
-          hoppers.map((documentId) => {
-            if (documentId === "" || documentId === email) {
-              return null; // Skips this iteration
-            }
-            return (
-              <ProfileCard
-                key={documentId}
-                documentId={documentId}
-                sx={{ margin: "24px" }}
-              />
-            );
-          })
-        )}
+        {hoppers.map((documentId) => {
+          if (documentId === "" || documentId === email) {
+            return null; // Skips this iteration
+          }
+          return (
+            <ProfileCard
+              key={documentId}
+              documentId={documentId}
+              sx={{ margin: "24px" }}
+            />
+          );
+        })}
       </Box>
     </Box>
   );
