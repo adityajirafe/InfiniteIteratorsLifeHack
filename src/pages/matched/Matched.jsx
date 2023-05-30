@@ -37,65 +37,68 @@ const CustomSelect = styled(Select, {
 }));
 
 export default function Matched() {
-    const { email } = useGlobalContext();
-    const db = firestore;
-    const usersCollection = collection(db, 'users');
-    const [hoppers, setHoppers] = useState([]);
-    const [map, setMap] = useState(/** @type google.maps.Map */ (null));
-    const [directionsResponse, setDirectionsResponse] = useState(null);
-    const [selectedDriver, setSelectedDriver] = useState(null);
-    const [direction, setDirection] = useState("");
+  const { email } = useGlobalContext();
+  const db = firestore;
+  const usersCollection = collection(db, "users");
+  const [hoppers, setHoppers] = useState([]);
+  const [map, setMap] = useState(/** @type google.maps.Map */ (null));
+  const [directionsResponse, setDirectionsResponse] = useState(null);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [direction, setDirection] = useState("");
 
-    const successfulMatch = async (email) => {
-        const userDoc = doc(usersCollection, email);
-        const docSnapshot = await getDoc(userDoc);
-      
-        if (docSnapshot.exists()) {
-          const documentData = docSnapshot.data();
-          const { requests } = documentData;
-          console.log('requests', requests);
-      
-          requests.forEach((req) => {
-            if (req === '') {
-              console.log('skip');
-            } else {
-              const userDoc2 = doc(usersCollection, req);
-              getDoc(userDoc2)
-                .then((docSnapshot) => {
-                  if (docSnapshot.exists()) {
-                    const documentData2 = docSnapshot.data();
-                    const requests2 = documentData2.requests; // see this person's requests
-                    // console.log('requests222:', requests2);
-                    // console.log(req);
-                    // console.log(requests2.includes(email)); // check if I'm in their requests
-      
-                    if (requests2.includes(email)) {
-                      const myHoppers = documentData.hoppers;
-                      const matchHoppers = documentData2.hoppers;
-                      const myUpdatedhoppers = documentData.hoppers.concat(matchHoppers).concat(req);
-                      const matchUpdatedhoppers = documentData2.hoppers.concat(myHoppers).concat(email);
-                      // console.log("matchUpdatedhoppers",matchUpdatedhoppers)
-                      // console.log("myUpdatedhoppers",myUpdatedhoppers)
-                      updateDoc(userDoc, {
-                        hoppers: myUpdatedhoppers
-                      });
-                      updateDoc(userDoc2, {
-                        hoppers: matchUpdatedhoppers
-                      });
-      
-                      const uniqueArray = Array.from(new Set(myUpdatedhoppers));
-                      setHoppers(uniqueArray);
-                      console.log('helloooo');
-                      console.log(uniqueArray);
-                    }
-                  }
+  const successfulMatch = async (email) => {
+    const userDoc = doc(usersCollection, email);
+    const docSnapshot = await getDoc(userDoc);
+
+    if (docSnapshot.exists()) {
+      const documentData = docSnapshot.data();
+      const { requests } = documentData;
+      console.log("requests", requests);
+
+      requests.forEach((req) => {
+        if (req === "") {
+          console.log("skip");
+        } else {
+          const userDoc2 = doc(usersCollection, req);
+          getDoc(userDoc2).then((docSnapshot) => {
+            if (docSnapshot.exists()) {
+              const documentData2 = docSnapshot.data();
+              const requests2 = documentData2.requests; // see this person's requests
+              // console.log('requests222:', requests2);
+              // console.log(req);
+              // console.log(requests2.includes(email)); // check if I'm in their requests
+
+              if (requests2.includes(email)) {
+                const myHoppers = documentData.hoppers;
+                const matchHoppers = documentData2.hoppers;
+                const myUpdatedhoppers = documentData.hoppers
+                  .concat(matchHoppers)
+                  .concat(req);
+                const matchUpdatedhoppers = documentData2.hoppers
+                  .concat(myHoppers)
+                  .concat(email);
+                // console.log("matchUpdatedhoppers",matchUpdatedhoppers)
+                // console.log("myUpdatedhoppers",myUpdatedhoppers)
+                updateDoc(userDoc, {
+                  hoppers: myUpdatedhoppers,
                 });
+                updateDoc(userDoc2, {
+                  hoppers: matchUpdatedhoppers,
+                });
+
+                const uniqueArray = Array.from(new Set(myUpdatedhoppers));
+                setHoppers(uniqueArray);
+                console.log("helloooo");
+                console.log(uniqueArray);
+              }
             }
           });
         }
-        await getAddresses(email);
-      };
-      
+      });
+    }
+    await getAddresses(email);
+  };
+
   const [routes, setRoutes] = useState(null);
 
   //   const findRoute = async () => {
@@ -226,7 +229,6 @@ export default function Matched() {
     const numStops = uniqueAddressArray.length + 1;
     const routeResult = {};
 
-
     // eslint-disable-next-line no-undef
     const directionService = new google.maps.DirectionsService();
 
@@ -273,7 +275,6 @@ export default function Matched() {
   const deleteUser = async () => {
     await deleteDoc(doc(db, "users", "adityajirafe@gmail.com"));
   };
-  
 
   useEffect(() => {
     //deleteUser() uncomment this to delete doc if necessary (when its making too many queries)
@@ -391,10 +392,10 @@ export default function Matched() {
             "&:hover": {
               background: (theme) => theme.palette.secondary.main,
             },
-            whiteSpace: 'nowrap',
-            marginLeft: '24px',
-            marginRight: '24px',
-            width: '300px'
+            whiteSpace: "nowrap",
+            marginLeft: "24px",
+            marginRight: "24px",
+            width: "300px",
           }}
         >
           <Typography
@@ -415,9 +416,9 @@ export default function Matched() {
             "&:hover": {
               background: (theme) => theme.palette.secondary.main,
             },
-            whiteSpace: 'nowrap',
-            width: '300px',
-            marginRight: '24px'
+            whiteSpace: "nowrap",
+            width: "300px",
+            marginRight: "24px",
           }}
         >
           <Typography
@@ -434,10 +435,10 @@ export default function Matched() {
           sx={{
             backgroundColor: "#36454F",
             "&:hover": {
-              backgroundColor: '#36454F',
+              backgroundColor: "#36454F",
             },
-            whiteSpace: 'nowrap',
-            width: '300px'
+            whiteSpace: "nowrap",
+            width: "300px",
           }}
         >
           <Typography
@@ -513,21 +514,31 @@ export default function Matched() {
         </GoogleMap>
       </Box>
 
-      <Box 
-        display="flex" 
-        flexDirection="row" 
-        flexWrap={true} 
+      <Box
+        display="flex"
+        flexDirection="row"
+        flexWrap={true}
         justifyContent="center"
         width="97%"
         margin="0px 24px"
         marginRight="24px"
-        >
-            {hoppers.map((documentId) => {
-                if (documentId === "") {
-                    return null; // Skips this iteration
-                }
-                    return <ProfileCard key={documentId} documentId={documentId} sx={{ margin: '24px'}}/>;
-            })}
+      >
+        {hoppers.length === 0 ? (
+          <Typography variant="h5">You have no matches!</Typography>
+        ) : (
+          hoppers.map((documentId) => {
+            if (documentId === "") {
+              return null; // Skips this iteration
+            }
+            return (
+              <ProfileCard
+                key={documentId}
+                documentId={documentId}
+                sx={{ margin: "24px" }}
+              />
+            );
+          })
+        )}
       </Box>
     </Box>
   );
