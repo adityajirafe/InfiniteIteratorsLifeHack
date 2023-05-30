@@ -4,7 +4,11 @@ import { collection, getDocs, doc, getDoc } from "firebase/firestore";
 import ProfileCard from "../../components/ProfileCard";
 import { firestore } from "../../firebase";
 import { useGlobalContext } from "../../context";
-import { DirectionsRenderer, GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {
+  DirectionsRenderer,
+  GoogleMap,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import { googleLibraries } from "../../geometry";
 
 export default function Neighbours() {
@@ -21,40 +25,40 @@ export default function Neighbours() {
         const myTownshipResult = await myTownship();
         await fetchDocumentIds(myTownshipResult);
       } catch (error) {
-        console.log('Error fetching data:', error);
+        console.log("Error fetching data:", error);
       }
     };
-  
+
     const myTownship = async () => {
-      const docRef = doc(db, 'users', email);
+      const docRef = doc(db, "users", email);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        console.log('Document data:', docSnap.data());
+        console.log("Document data:", docSnap.data());
         const data = docSnap.data();
         console.log(data.township);
         setMyTown(data.township);
         return data.township;
       } else {
-        console.log('No such document!');
-        return '';
+        console.log("No such document!");
+        return "";
       }
     };
-  
+
     const fetchDocumentIds = async (myTownshipResult) => {
       try {
         const collectionRef = collection(db, myTownshipResult);
         const querySnapshot = await getDocs(collectionRef);
         let documents = querySnapshot.docs
           .map((doc) => doc.id)
-          .filter((id) => id !== email && id !== 'info');
-        console.log('documents');
+          .filter((id) => id !== email && id !== "info");
+        console.log("documents");
         console.log(documents);
         setDocumentsArray(documents);
       } catch (error) {
-        console.log('Error fetching document IDs:', error);
+        console.log("Error fetching document IDs:", error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -78,29 +82,26 @@ export default function Neighbours() {
       </>
     );
   }
-  
+
   return (
     <>
-      <Box
-        display="flex"
-        justifyContent="center"
-      >
+      <Box display="flex" justifyContent="center">
         <Typography
-            sx={{
-              fontSize: "50px",
-              marginTop: '16px'
-            }}
-          >
-            Neighbours
+          sx={{
+            fontSize: "50px",
+            marginTop: "16px",
+          }}
+        >
+          Neighbours
         </Typography>
       </Box>
-      
-      <Box 
+
+      <Box
         display="flex"
         flexDirection="row"
-        sx={{ 
+        sx={{
           backgroundColor: "#FFFFFF",
-          width: '100%' 
+          width: "100%",
         }}
       >
         <Box
@@ -110,17 +111,24 @@ export default function Neighbours() {
           maxHeight="75vh"
           margin="24px 0px 24px 24px"
           sx={{
-            overflowY: 'scroll',
-            overflowX: 'hidden',
-            '&::-webkit-scrollbar': {
-                display: 'none'
-            }
+            overflowY: "scroll",
+            overflowX: "hidden",
+            "&::-webkit-scrollbar": {
+              display: "none",
+            },
           }}
         >
-          {documentsArray.map((documentId) => (
-          <ProfileCard key={documentId} documentId={documentId} isRequest={true} />
-          ))}
-
+          {documentsArray.length === 0 ? (
+            <Typography variant="h5">You have no neighbours!</Typography>
+          ) : (
+            documentsArray.map((documentId) => (
+              <ProfileCard
+                key={documentId}
+                documentId={documentId}
+                isRequest={true}
+              />
+            ))
+          )}
         </Box>
 
         <Box
@@ -134,10 +142,10 @@ export default function Neighbours() {
             alignItems: "right",
             justifyContent: "right",
             zIndex: "modal",
-            margin: '24px'
+            margin: "24px",
           }}
         >
-        <GoogleMap
+          <GoogleMap
             center={center}
             zoom={10}
             mapContainerStyle={{ width: "100%", height: "100%" }}
@@ -155,8 +163,6 @@ export default function Neighbours() {
           </GoogleMap>
         </Box>
       </Box>
-
-      
     </>
   );
 }

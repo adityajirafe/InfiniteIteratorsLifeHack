@@ -21,7 +21,7 @@ function Header() {
     >
       <Toolbar>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Infinite Carpool Iterators
+          Infinite Carpool
         </Typography>
         <Button color="inherit" component={Link} to="/home">
           Home
