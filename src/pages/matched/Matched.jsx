@@ -527,7 +527,7 @@ export default function Matched() {
           <Typography variant="h5">You have no matches!</Typography>
         ) : (
           hoppers.map((documentId) => {
-            if (documentId === "") {
+            if (documentId === "" || documentId === email) {
               return null; // Skips this iteration
             }
             return (
